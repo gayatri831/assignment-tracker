@@ -40,6 +40,10 @@ def _validate_assignment(form):
         return False, "Subject is required."
     if not name:
         return False, "Assignment name is required."
+    if len(subject) > 60:
+        return False, "Subject must be 60 characters or fewer."
+    if len(name) > 100:
+        return False, "Assignment name must be 100 characters or fewer."
     if not due_date:
         return False, "Due date is required."
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", due_date):

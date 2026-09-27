@@ -1,3 +1,4 @@
+
 import os
 import sys
 
@@ -96,3 +97,24 @@ def test_assignments_api_returns_json(client):
     assert response.status_code == 200
     assert response.is_json
     assert response.get_json() == []
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("subject", "S" * 61),
+        ("name", "A" * 101),
+    ],
+)
+def test_add_rejects_text_that_is_too_long(client, field, value):
+    data = {
+        "subject": "Mathematics",
+        "name": "Assignment 1",
+        "due_date": "2026-10-15",
+    }
+    data[field] = value
+
+    response = client.post("/add", data=data)
+
+    assert response.status_code == 400
+    assert client.get("/api/assignments").get_json() == []
