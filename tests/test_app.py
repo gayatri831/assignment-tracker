@@ -186,3 +186,23 @@ def test_add_rejects_duplicate_assignment(client):
             "completed": False,
         }
     ]
+
+def test_add_rejects_case_insensitive_duplicate(client):
+    first_data = {
+        "subject": "Mathematics",
+        "name": "Assignment 1",
+        "due_date": "2026-10-20",
+    }
+
+    second_data = {
+        "subject": "mathematics",
+        "name": "assignment 1",
+        "due_date": "2026-10-25",
+    }
+
+    first_response = client.post("/add", data=first_data)
+    second_response = client.post("/add", data=second_data)
+
+    assert first_response.status_code == 302
+    assert second_response.status_code == 400
+    assert len(client.get("/api/assignments").get_json()) == 1
