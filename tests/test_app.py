@@ -72,7 +72,11 @@ def test_add_invalid_date_rejected(client):
 def test_complete_and_delete_assignment(client):
     client.post(
         "/add",
-        data={"subject": "Physics", "name": "Lab report", "due_date": "2026-11-01"},
+        data={
+            "subject": "Physics",
+            "name": "Lab report",
+            "due_date": "2026-11-01",
+        },
     )
     data = client.get("/api/assignments").get_json()
     assignment_id = data[0]["id"]
@@ -84,3 +88,11 @@ def test_complete_and_delete_assignment(client):
     client.post(f"/delete/{assignment_id}")
     data = client.get("/api/assignments").get_json()
     assert data == []
+
+
+def test_assignments_api_returns_json(client):
+    response = client.get("/api/assignments")
+
+    assert response.status_code == 200
+    assert response.is_json
+    assert response.get_json() == []
