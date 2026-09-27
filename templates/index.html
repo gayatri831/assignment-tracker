@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="summary-cards">
+    <div class="card">
+      <span class="card-number">{{ total_count }}</span>
+      <span class="card-label">Total</span>
+    </div>
+    <div class="card pending">
+      <span class="card-number">{{ pending_count }}</span>
+      <span class="card-label">Pending</span>
+    </div>
+    <div class="card completed">
+      <span class="card-number">{{ completed_count }}</span>
+      <span class="card-label">Completed</span>
+    </div>
+  </section>
+
+  <section class="add-form">
+    <h2>Add an assignment</h2>
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+    <form action="{{ url_for('add_assignment') }}" method="post">
+      <label>
+        Subject
+        <input type="text" name="subject" placeholder="e.g. Data Structures" required>
+      </label>
+      <label>
+        Assignment name
+        <input type="text" name="name" placeholder="e.g. Lab Report 3" required>
+      </label>
+      <label>
+        Due date
+        <input type="date" name="due_date" required>
+      </label>
+      <button type="submit">Add assignment</button>
+    </form>
+  </section>
+
+  <section class="assignment-list">
+    <h2>Your assignments</h2>
+    {% if assignments|length == 0 %}
+      <p class="empty">No assignments yet. Add your first one above.</p>
+    {% else %}
+      <table>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Assignment</th>
+            <th>Due date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in assignments %}
+            <tr class="{{ 'done' if a.completed else '' }}">
+              <td>{{ a.subject }}</td>
+              <td>{{ a.name }}</td>
+              <td>{{ a.due_date }}</td>
+              <td>
+                {% if a.completed %}
+                  <span class="badge badge-done">Completed</span>
+                {% else %}
+                  <span class="badge badge-pending">Pending</span>
+                {% endif %}
+              </td>
+              <td class="actions">
+                <form action="{{ url_for('complete_assignment', assignment_id=a.id) }}" method="post">
+                  <button type="submit" class="btn-small">
+                    {{ "Undo" if a.completed else "Mark done" }}
+                  </button>
+                </form>
+                <form action="{{ url_for('delete_assignment', assignment_id=a.id) }}" method="post">
+                  <button type="submit" class="btn-small btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </section>
+{% endblock %}
