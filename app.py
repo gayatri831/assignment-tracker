@@ -49,9 +49,14 @@ def _validate_assignment(form):
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", due_date):
         return False, "Due date must be in YYYY-MM-DD format."
     try:
-        datetime.strptime(due_date, "%Y-%m-%d")
+        parsed_date = datetime.strptime(
+            due_date, "%Y-%m-%d"
+        ).date()
     except ValueError:
         return False, "Due date is not a real calendar date."
+
+    if parsed_date < datetime.today().date():
+        return False, "Due date cannot be in the past."
 
     return True, None
 

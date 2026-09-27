@@ -1,7 +1,7 @@
 
 import os
 import sys
-
+from datetime import date, timedelta
 import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -125,6 +125,21 @@ def test_add_rejects_impossible_date(client):
         "subject": "Mathematics",
         "name": "Assignment 1",
         "due_date": "2026-02-30",
+    }
+
+    response = client.post("/add", data=data)
+
+    assert response.status_code == 400
+    assert client.get("/api/assignments").get_json() == []
+
+
+def test_add_rejects_past_due_date(client):
+    past_date = (date.today() - timedelta(days=1)).isoformat()
+
+    data = {
+        "subject": "Mathematics",
+        "name": "Assignment 2",
+        "due_date": past_date,
     }
 
     response = client.post("/add", data=data)
