@@ -108,7 +108,11 @@
                   action="{{ url_for('complete_assignment', assignment_id=a.id) }}"
                   method="post"
                 >
-                  <button type="submit" class="btn-small">
+                  <button
+                    type="submit"
+                    class="btn-small"
+                    aria-label="{{ 'Undo completed assignment: ' ~ a.name if a.completed else 'Mark assignment as done: ' ~ a.name }}"
+                  >
                     {{ "Undo" if a.completed else "Mark done" }}
                   </button>
                 </form>
@@ -120,6 +124,7 @@
                   <button
                     type="submit"
                     class="btn-small btn-danger"
+                    aria-label="Delete assignment: {{ a.name }}"
                     onclick="return confirm('Are you sure you want to delete this assignment?');"
                   >
                     Delete
