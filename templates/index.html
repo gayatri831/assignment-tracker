@@ -31,10 +31,14 @@
         <input
           type="text"
           name="subject"
+          id="subject-input"
           placeholder="e.g. Data Structures"
           maxlength="60"
           required
         >
+        <small>
+          <span id="subject-count">0</span>/60 characters
+        </small>
       </label>
 
       <label>
@@ -42,10 +46,14 @@
         <input
           type="text"
           name="name"
+          id="name-input"
           placeholder="e.g. Lab Report 3"
           maxlength="100"
           required
         >
+        <small>
+          <span id="name-count">0</span>/100 characters
+        </small>
       </label>
 
       <label>
@@ -112,6 +120,7 @@
                   <button
                     type="submit"
                     class="btn-small btn-danger"
+                    onclick="return confirm('Are you sure you want to delete this assignment?');"
                   >
                     Delete
                   </button>
@@ -125,11 +134,37 @@
   </section>
 
   <script>
+    // Prevent selecting a past due date.
     const dueDateInput = document.getElementById("due-date");
 
     if (dueDateInput) {
       const today = new Date().toISOString().split("T")[0];
       dueDateInput.min = today;
+    }
+
+    // Character counters.
+    const subjectInput = document.getElementById("subject-input");
+    const nameInput = document.getElementById("name-input");
+
+    const subjectCount = document.getElementById("subject-count");
+    const nameCount = document.getElementById("name-count");
+
+    function updateCount(input, counter) {
+      if (input && counter) {
+        counter.textContent = input.value.length;
+      }
+    }
+
+    if (subjectInput) {
+      subjectInput.addEventListener("input", function () {
+        updateCount(subjectInput, subjectCount);
+      });
+    }
+
+    if (nameInput) {
+      nameInput.addEventListener("input", function () {
+        updateCount(nameInput, nameCount);
+      });
     }
   </script>
 {% endblock %}
