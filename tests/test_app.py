@@ -187,6 +187,7 @@ def test_add_rejects_duplicate_assignment(client):
         }
     ]
 
+
 def test_add_rejects_case_insensitive_duplicate(client):
     first_data = {
         "subject": "Mathematics",
