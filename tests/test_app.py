@@ -118,3 +118,16 @@ def test_add_rejects_text_that_is_too_long(client, field, value):
 
     assert response.status_code == 400
     assert client.get("/api/assignments").get_json() == []
+
+
+def test_add_rejects_impossible_date(client):
+    data = {
+        "subject": "Mathematics",
+        "name": "Assignment 1",
+        "due_date": "2026-02-30",
+    }
+
+    response = client.post("/add", data=data)
+
+    assert response.status_code == 400
+    assert client.get("/api/assignments").get_json() == []
